@@ -1,8 +1,8 @@
 
 exports.up = function(knex) {
     return knex.schema.createTable("pedidoItem", (table) =>{
-        table.int ("idPedido").notNull();
-        table.int ("idItem").notNull();
+        table.integer ("idPedido").notNull();
+        table.integer ("idItem").notNull();
     })
 };
 
