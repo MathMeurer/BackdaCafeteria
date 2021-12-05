@@ -25,6 +25,9 @@ module.exports = (app) =>{
     .put(app.api.mesas.save)
     .delete(app.api.mesas.remove)
 
+    app.route("/pedidos/")
+    .get(app.api.pedidos.get)
+
     app.route("/pedidos/abrir")
     .post(app.api.pedidos.open)
 
