@@ -73,9 +73,55 @@ module.exports = (app) =>{
     
     }
 
-    
+    const addItem = async (req,res) => {
+
+      const idMesa = req.body.mesa
+      const idItem = req.body.item
+
+      if(!idMesa){
+        return res.status(400).json({error: 'mesa não informada'})
+      }
+
+      if(!idItem){
+        return res.status(400).json({error: 'item não informado'})
+      }
+
+      // verifica se há pedidos abertos na mesa
+      const pedido = await app
+      .database("pedidos")
+      .where({ idMesa, aberto: true})
+      .first();
+
+      if(!pedido) {
+        return res.status(400).json({ error: `Não há pedidos abertos na mesa ${idMesa}`})
+      }
+
+      // verifica se o item existe no banco de dados
+      const item = await app
+      .database("categories")
+      .where({ id:idItem})
+      .first();
+
+      if(!item) {
+        return res.status(400).json({ error: `O item ${idItem} não existe na base dados.` })
+      }
+
+      const pedidoItem = {
+        idPedido: pedido.id,
+        idItem
+      }
+
+      await app
+      .database("pedidoItem")
+      .insert(pedidoItem)
+      .then ((_) => res.status(200).json({message: "item adicionado ao pedido"}))
+      .catch((err) => res.status(500).send(err))
+      
+    }
 
     
 
-    return { get, open, close }
+    
+
+    return { get, open, close, addItem }
 }

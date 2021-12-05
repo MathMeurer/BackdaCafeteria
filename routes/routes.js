@@ -30,5 +30,8 @@ module.exports = (app) =>{
 
     app.route("/pedidos/fechar")
     .post(app.api.pedidos.close)
+
+    app.route("/pedidos/adicionar")
+    .post(app.api.pedidos.addItem)
     
 }

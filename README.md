@@ -20,4 +20,17 @@
 }
 ```
 
+* POST /pedidos/adicionar
+
+Adiciona um item ao pedido de uma mesa
+
+É necessário fornecer via json o número da mesa e o id do item
+
+```json
+{
+	"mesa":1,
+	"item":1
+}
+```
+
 
