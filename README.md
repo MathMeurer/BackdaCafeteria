@@ -1,6 +1,6 @@
 ## Rota pedidos
 
-* /pedidos/abrir
+* POST /pedidos/abrir
 
 É necessário fornecer via json o número da mesa para qual o pedido vai ser aberto.
 
@@ -10,7 +10,7 @@
 }
 ```
 
-* /pedidos/fechar
+* POST /pedidos/fechar
 
 É necessário fornecer via json o número da mesa para fechar um pedido
 
