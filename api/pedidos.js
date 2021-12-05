@@ -106,6 +106,21 @@ module.exports = (app) =>{
         return res.status(400).json({ error: `O item ${idItem} não existe na base dados.` })
       }
 
+      //atualiza o valor total do pedido
+
+      const pedidoAtualizado = {
+        valorTotal: pedido.valorTotal + item.valor
+      }
+
+      await app
+      .database("pedidos")
+      .update(pedidoAtualizado)
+      .where({ id: pedido.id })
+      .catch((err) => res.status(500).send(err))
+
+
+      // adiciona o item ao pedido
+
       const pedidoItem = {
         idPedido: pedido.id,
         idItem
@@ -119,9 +134,6 @@ module.exports = (app) =>{
       
     }
 
-    
-
-    
 
     return { get, open, close, addItem }
 }
