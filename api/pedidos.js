@@ -52,22 +52,50 @@ module.exports = (app) =>{
 
     const close = async (req,res) => {
 
-      const mesa = req.body.mesa
+      const idMesa = req.body.mesa
 
-      if(!mesa){
+      if(!idMesa){
         return res.status(400).json({error: 'mesa não informada'})
       }
 
-      const pedido = {
-        aberto: false
+      
+
+      //verifica se existe pedido aberto para a mesa
+
+      const pedido = await app
+      .database("pedidos")
+      .where({ idMesa, aberto: true})
+      .first();
+
+      if(!pedido) {
+        return res.status(400).json({ error: `Não há pedidos abertos na mesa ${idMesa}`})
       }
 
+      // busca todos os itens do pedido
+
+      const itens = await app
+      .database("pedidoItem")
+      .where({ idPedido: pedido.id});
+      
+      // faz um resumo dos itens pedidos na mesa
+      const resumo = itens.reduce((total , item)=>{
+        const itemExists = total.find((totalItem)=>totalItem.idItem === item.idItem);
+        if(itemExists){
+          itemExists.quantidade++;
+          return [...total];
+        }
+        return [...total , {idItem: item.idItem, quantidade: 1}]
+      },[])
+      
       await app
       .database("pedidos")
-      .update(pedido)
-      .where({ idMesa: mesa , aberto: true})
+      .update({aberto: false})
+      .where({ idMesa , aberto: true})
       .then ((resumoPedido) => res.status(200).json({
           message: 'pedido fechado',
+          idMesa, 
+          valorTotal: pedido.valorTotal,
+          resumo
         }))
       .catch((err) => res.status(500).send(err))
     
